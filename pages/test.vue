@@ -1,21 +1,13 @@
 <template>
-  <div class="gui">
-    <div class="gui__buttons">
-      <base-button size="large" icon="uil:github">Тест</base-button>
-      <base-button outlined size="large" color="success" icon="uil:github">Тест</base-button>
-      <base-button size="large" color="info" endIcon="uil:github">Тест</base-button>
-      <base-button outlined size="large" color="warning" icon="uil:github" />
-      <base-button size="large" color="error" icon="uil:github" />
-    </div>
+  <div class="test">
+    <FoodCard :item="food1"></FoodCard>
   </div>
 </template>
 
-<style lang="scss" scoped>
-.gui {
-  &__buttons {
-    display: flex;
-    align-items: center;
-    gap: $spacing-4;
-  }
-}
-</style>
+<script lang="ts" setup>
+import { Nutrients, Food, Category } from '#imports'
+
+const food1 = new Food('Банан', new Nutrients(89, 1.09, 0.33, 22.84), new Category('Фрукты', '1'))
+</script>
+
+<style lang="scss" scoped></style>

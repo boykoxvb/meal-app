@@ -1,5 +1,5 @@
 <template>
-  <div class="base-button" :class="{ outlined: props.outlined, 'icon-only': iconOnly }">
+  <div class="base-button" :class="classes">
     <Icon v-if="props.icon" :name="`${props.icon}`" />
 
     <div class="base-button__title">
@@ -12,7 +12,7 @@
 
 <script lang="ts" setup>
 defineOptions({
-  name: 'BaseButton',
+  name: 'DeprecatedBaseButton',
 })
 
 const props = defineProps({
@@ -25,9 +25,9 @@ const props = defineProps({
   },
   size: {
     type: String,
-    default: BUTTON_SIZES.medium,
+    default: 'medium',
     validator(value: string) {
-      return Object.keys(BUTTON_SIZES).includes(value)
+      return Object.keys(BLOCK_SIZES).includes(value)
     },
   },
   outlined: {
@@ -36,11 +36,15 @@ const props = defineProps({
   },
   icon: String,
   endIcon: String,
+  disabled: {
+    type: Boolean,
+    default: false,
+  },
 })
 
 const slots = useSlots()
 
-const color = useColor(props.color)
+const color = useColor(props.color, props.disabled)
 const size = useSize(props.size)
 
 const iconOnly = computed(() => {
@@ -48,6 +52,14 @@ const iconOnly = computed(() => {
 })
 
 const fontSize = useSize(getNextSize(props.size, -1))
+
+const classes = computed(() => {
+  return {
+    outlined: props.outlined,
+    'icon-only': iconOnly.value,
+    disabled: props.disabled,
+  }
+})
 </script>
 
 <style lang="scss" scoped>
@@ -66,22 +78,22 @@ const fontSize = useSize(getNextSize(props.size, -1))
   color: $color-base-white;
   transition-duration: $transition-duration;
   border: 1px solid v-bind(color);
+  user-select: none;
+  border-radius: $border-radius;
 
-  &:hover {
+  &:hover:not(.disabled) {
     background-color: $color-base-white;
     color: v-bind(color);
 
     transition-duration: $transition-duration;
   }
 
-  border-radius: $border-radius;
-
   &.outlined {
     color: v-bind(color);
 
     background-color: transparent;
 
-    &:hover {
+    &:hover:not(.disabled) {
       background-color: v-bind(color);
       color: $color-base-white;
 
@@ -93,6 +105,10 @@ const fontSize = useSize(getNextSize(props.size, -1))
     gap: 0;
     padding: $spacing-2;
     width: v-bind(size);
+  }
+
+  &.disabled {
+    cursor: default;
   }
 }
 </style>

@@ -11,7 +11,7 @@ export const ICON_SIZES = {
   ...SIZES,
 }
 
-export const BUTTON_SIZES = {
+export const BLOCK_SIZES = {
   medium: SIZES.medium,
   large: SIZES.large,
 }

@@ -1,0 +1,53 @@
+  @mixin p1() {
+    font-size: $font-size-p1;
+    font-weight: $font-weight-regular;
+    // line-height: $line-height-p1;
+  }
+  
+  @mixin p1-semibold() {
+    font-size: $font-size-p1;
+    font-weight: $font-weight-semibold;
+    // line-height: $line-height-p1;
+  }
+  
+  @mixin p2() {
+    font-size: $font-size-p2;
+    font-weight: $font-weight-regular;
+    // line-height: $line-height-p2;
+  }
+  
+  @mixin p2-semibold() {
+    font-size: $font-size-p2;
+    font-weight: $font-weight-semibold;
+    // line-height: $line-height-p2;
+  }
+  
+  @mixin p3() {
+    font-size: $font-size-p3;
+    font-weight: $font-weight-regular;
+    // line-height: $line-height-p3;
+  }
+  
+  @mixin p3-semibold() {
+    font-size: $font-size-p3;
+    font-weight: $font-weight-semibold;
+    // line-height: $line-height-p3;
+  }
+  
+  @mixin p3-bold() {
+    font-size: $font-size-p3;
+    font-weight: $font-weight-bold;
+    // line-height: $line-height-p3;
+  }
+  
+  @mixin p4($font-weight: null) {
+    font-size: $font-size-p4;
+    font-weight: $font-weight-regular;
+    // line-height: $line-height-p4;
+  }
+  
+  @mixin p4-bold($font-weight: null) {
+    font-size: $font-size-p4;
+    font-weight: $font-weight-bold;
+    // line-height: $line-height-p4;
+  }

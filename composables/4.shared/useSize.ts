@@ -1,4 +1,4 @@
-export const useSize = (sizeName: string) => {
+export const useSize = (sizeName: Size | string) => {
   const sizeKey: Size = <Size>sizeName
   const sizeCode = SIZES[sizeKey]
 

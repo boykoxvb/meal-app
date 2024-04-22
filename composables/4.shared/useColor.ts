@@ -1,7 +1,9 @@
-export const useColor = (colorName: string) => {
-  const color = computed(() => {
-    return `var(--color-${colorName}-400)`
-  })
+export const useColor = (color: string, disabled?: boolean, weight?: number) => {
+  if (disabled) {
+    return `var(--color-base-disabled)`
+  }
 
-  return color
+  return computed(() => {
+    return `var(--color-${color}-${weight ? weight : 400})`
+  })
 }
