@@ -4,7 +4,7 @@ export default class Food {
   constructor(
     public title: string,
     public nutrients: Nutrients,
-    public category: Category, //TODO сделать класс
-    public subcategory?: Category //TODO сделать класс
+    public category: Category,
+    public subcategory?: Category
   ) {}
 }

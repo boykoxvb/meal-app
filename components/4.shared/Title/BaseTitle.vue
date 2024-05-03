@@ -3,8 +3,8 @@
     <input
       class="base-title__input"
       type="text"
-      :value="props.title"
-      :readonly="props.edit"
+      :value="props.title ?? props.modelValue"
+      :readonly="!props.editMode"
       :placeholder="props.placeholder"
       @change="onChange"
     />
@@ -20,7 +20,8 @@ const emit = defineEmits(['change', 'update:modelValue'])
 
 const props = defineProps({
   title: String,
-  edit: {
+  modelValue: String,
+  editMode: {
     type: Boolean,
     default: false,
   },
@@ -47,7 +48,7 @@ const onChange = (e: Event) => {
   min-width: $spacing-18;
 
   &__input {
-    @include p1;
+    @include p0-semibold;
 
     min-width: $spacing-18;
 

@@ -1,47 +1,41 @@
 <template>
   <div class="nutrients-card">
     <div class="nutrients-card__row nutrients-card__caloricity">
-      <div class="nutrients-card__col">
-        <label>Калорийность / 100 гр.</label>
-        <BaseInputNumber v-model="caloricity" suffix=" ккал" />
-      </div>
+      <label>Калорийность на 100 гр:</label>
+      <label
+        ><b>{{ $props.item.caloricity }} ккал</b></label
+      >
     </div>
 
-    <div class="nutrients-card__row">
+    <div class="nutrients-card__row f-space-around">
       <div class="nutrients-card__col nutrients-card__nutrient">
+        <BaseKnob
+          v-model="props.item.proteins"
+          valueColor="var(--primary-500)"
+          readonly
+          :max="maxKnobValue"
+        />
         <label class=""> Белки </label>
-        <BaseInputNumber
-          v-model="proteins"
-          class="nutrients-card__nutrient-input"
-          showButtons
-          :minFractionDigits="0"
-          :maxFractionDigits="1"
-          :step="0.1"
-        />
       </div>
 
       <div class="nutrients-card__col nutrients-card__nutrient">
+        <BaseKnob
+          v-model="props.item.fats"
+          valueColor="var(--blue-500)"
+          readonly
+          :max="maxKnobValue"
+        />
         <label class=""> Жиры </label>
-        <BaseInputNumber
-          v-model="fats"
-          class="nutrients-card__nutrient-input"
-          showButtons
-          :minFractionDigits="0"
-          :maxFractionDigits="1"
-          :step="0.1"
-        />
       </div>
 
       <div class="nutrients-card__col nutrients-card__nutrient">
-        <label class=""> Углеводы </label>
-        <BaseInputNumber
-          v-model="carbs"
-          class="nutrients-card__nutrient-input"
-          showButtons
-          :minFractionDigits="0"
-          :maxFractionDigits="1"
-          :step="0.1"
+        <BaseKnob
+          v-model="props.item.carbs"
+          valueColor="var(--yellow-500)"
+          readonly
+          :max="maxKnobValue"
         />
+        <label class=""> Углеводы </label>
       </div>
     </div>
   </div>
@@ -51,10 +45,8 @@
 import type { Nutrients } from '#imports'
 
 defineOptions({
-  name: 'NutrientsCard',
+  name: 'NutrientsEditCard',
 })
-
-const emit = defineEmits(['update', 'update:modelValue'])
 
 const props = defineProps({
   item: {
@@ -63,61 +55,25 @@ const props = defineProps({
   },
 })
 
-const sendEmits = () => {
-  emit('update', itemBuffer)
-  emit('update:modelValue', itemBuffer)
-}
+//TODO когда появятся порции сделать
 
-const itemBuffer = reactive(props.item)
-
-const caloricity = computed({
-  get() {
-    return props.item.caloricity
-  },
-  set(value) {
-    itemBuffer.caloricity = value
-    emit('update', itemBuffer)
-  },
-})
-
-const proteins = computed({
-  get() {
-    return props.item.proteins
-  },
-  set(value) {
-    itemBuffer.proteins = value
-    sendEmits()
-  },
-})
-
-const fats = computed({
-  get() {
-    return props.item.fats
-  },
-  set(value) {
-    itemBuffer.fats = value
-    sendEmits()
-  },
-})
-
-const carbs = computed({
-  get() {
-    return props.item.carbs
-  },
-  set(value) {
-    itemBuffer.carbs = value
-    sendEmits()
-  },
-})
+const maxKnobValue = computed(() => props.item.carbs + props.item.fats + props.item.proteins)
 </script>
 
 <style lang="scss" scoped>
 .nutrients-card {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
+  flex-wrap: nowrap;
   width: 100%;
   height: 100%;
   gap: $spacing-6;
+
+  &__caloricity {
+    @include p1;
+
+    margin-bottom: $spacing-8;
+  }
 
   &__row {
     display: flex;
@@ -136,11 +92,9 @@ const carbs = computed({
   &__nutrient {
     @include p3;
 
-    &-input {
-      :deep(input) {
-        width: 100px;
-      }
-    }
+    display: flex;
+    flex-direction: column;
+    align-items: center;
   }
 }
 </style>

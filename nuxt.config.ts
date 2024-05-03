@@ -29,7 +29,16 @@ export default defineNuxtConfig({
   primevue: {
     components: {
       prefix: 'Base',
-      include: ['InputNumber', 'InputText', 'Button', 'Dropdown', 'FloatLabel', 'Image'],
+      include: [
+        'InputNumber',
+        'InputText',
+        'Button',
+        'Dropdown',
+        'FloatLabel',
+        'Image',
+        'Knob',
+        'Breadcrumb',
+      ],
     },
   },
 })
