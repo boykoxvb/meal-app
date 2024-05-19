@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   modules: ['@pinia/nuxt', '@nuxt/eslint', 'nuxt-icon', 'nuxt-primevue'],
   imports: {
-    dirs: ['components/**/**/**', 'composables/**', 'utils/**'],
+    dirs: ['components/**/**/**', 'composables/**', 'utils/**', 'classes/**/**'],
   },
   components: [
     {
@@ -38,6 +38,9 @@ export default defineNuxtConfig({
         'Image',
         'Knob',
         'Breadcrumb',
+        'DataTable',
+        'Column',
+        'InputText',
       ],
     },
   },

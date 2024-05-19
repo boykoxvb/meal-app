@@ -51,15 +51,7 @@
     <BaseSegment class="food-card__row">
       <NutrientsCard v-if="!props.editMode" :item="$props.item.nutrients"> </NutrientsCard>
 
-      <NutrientsEditCard
-        v-else
-        :item="bufferItem.nutrients"
-        @update="onNutrientsChange"
-      ></NutrientsEditCard>
-    </BaseSegment>
-
-    <BaseSegment class="food-card__row">
-      <PortionTable :item="sitems" @update="test"> </PortionTable>
+      <NutrientsEditCard v-else :item="nutrients" @update="onNutrientsChange"></NutrientsEditCard>
     </BaseSegment>
   </div>
 </template>
@@ -83,35 +75,10 @@ const props = defineProps({
   },
 })
 
-// const { buffer, onChange, hasChanges } = useBuffer(props.item)
-
-const title = ref(props.item.name)
+const title = ref(props.item.title)
 const category = ref(props.item.category)
 const subcategory = ref(props.item.subcategory)
-// const nutrients = ref(structuredClone(props.item.nutrients))
-const bufferItem = reactive(structuredClone(toRaw(props.item)))
-
-const onCategoryChange = (event: DropdownChangeEvent) => {
-  category.value = event.value
-  subcategory.value = undefined
-}
-
-const onNutrientsChange = (payload: { key: keyof Nutrients; value: any }) => {
-  bufferItem.nutrients[payload.key] = payload.value
-}
-
-// watch(bufferItem.nutrients, () => {
-//   console.log('nutrients поменялся')
-// })
-
-const hasChanges = computed(() => {
-  return (
-    title.value !== props.item.name ||
-    !deepEqual(category.value, props.item.category) ||
-    !deepEqual(subcategory.value, props.item.subcategory)
-    // !deepEqual(nutrients.value, props.item.nutrients)
-  )
-})
+const nutrients = ref(structuredClone(props.item.nutrients))
 
 const categoryOptions = MockDictionary.foodCategories
 
@@ -121,12 +88,23 @@ const categoryBreadcrumbs = computed(() => {
     : [{ label: props.item.category.name }]
 })
 
-const sitems = ref(props.item)
-
-const test = (value: any) => {
-  console.log('test')
-  sitems.value.portions = value
+const onCategoryChange = (event: DropdownChangeEvent) => {
+  category.value = event.value
+  subcategory.value = undefined
 }
+
+const onNutrientsChange = (value: Nutrients) => {
+  nutrients.value = value
+}
+
+const hasChanges = computed(() => {
+  return (
+    title.value !== props.item.title ||
+    !deepEqual(category.value, props.item.category) ||
+    !deepEqual(subcategory.value, props.item.subcategory) ||
+    !deepEqual(nutrients.value, props.item.nutrients)
+  )
+})
 </script>
 
 <style lang="scss" scoped>

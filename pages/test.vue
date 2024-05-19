@@ -1,18 +1,41 @@
 <template>
   <div class="test">
-    <FoodCard :item="food1"></FoodCard>
+    <FoodCard editMode :item="food"></FoodCard>
+    <!-- <PortionTable :item="food"></PortionTable> -->
   </div>
 </template>
 
 <script lang="ts" setup>
+import { v4 } from 'uuid'
 import { Nutrients, Food, Category } from '#imports'
 
-const food1 = new Food(
-  'Банан',
-  new Nutrients(89, 1.09, 0.33, 22.84),
-  new Category('Фрукты', '1'),
-  new Category('Фрукты', '1')
-)
+const x = v4()
+
+const foodDTO: FoodDTO = {
+  id: 'stringId',
+  name: 'Банан',
+  nutrients: {
+    caloricity: 100,
+    proteins: 20,
+    fats: 3,
+    carbs: 10,
+  },
+  portions: [
+    {
+      id: '1',
+      name: 'MyFirstPortion',
+      unit: Unit.units.gramm,
+      value: 1,
+    },
+  ],
+  category: {
+    id: '1',
+    name: 'Фрукты',
+  },
+  image: '/testimage.jpg',
+}
+
+const food = new Food(foodDTO)
 </script>
 
 <style lang="scss" scoped></style>

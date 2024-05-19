@@ -48,13 +48,11 @@
 </template>
 
 <script lang="ts" setup>
-import type { Nutrients } from '#imports'
+import type { INutritious, Nutrients } from '#imports'
 
 defineOptions({
   name: 'NutrientsEditCard',
 })
-
-const emit = defineEmits(['update', 'update:modelValue'])
 
 const props = defineProps({
   item: {
@@ -67,52 +65,15 @@ const props = defineProps({
   },
 })
 
-const sendEmits = () => {
-  emit('update', itemBuffer)
-  emit('update:modelValue', itemBuffer)
-}
+const emit = defineEmits<{
+  update: [value: ObjectUpdateModelPayload<Nutrients>]
+  'update:modelValue': [value: ObjectUpdateModelPayload<Nutrients>]
+}>()
 
-const itemBuffer = reactive(props.item)
-
-const caloricity = computed({
-  get() {
-    return props.item.caloricity
-  },
-  set(value) {
-    itemBuffer.caloricity = value
-    emit('update', itemBuffer)
-  },
-})
-
-const proteins = computed({
-  get() {
-    return props.item.proteins
-  },
-  set(value) {
-    itemBuffer.proteins = value
-    sendEmits()
-  },
-})
-
-const fats = computed({
-  get() {
-    return props.item.fats
-  },
-  set(value) {
-    itemBuffer.fats = value
-    sendEmits()
-  },
-})
-
-const carbs = computed({
-  get() {
-    return props.item.carbs
-  },
-  set(value) {
-    itemBuffer.carbs = value
-    sendEmits()
-  },
-})
+const { caloricity, proteins, fats, carbs } = useVModel(
+  props.item,
+  useObjectUpdateModel(props.item, emit, 'partial')
+)
 </script>
 
 <style lang="scss" scoped>

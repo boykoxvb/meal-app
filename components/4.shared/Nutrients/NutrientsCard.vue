@@ -1,11 +1,13 @@
 <template>
   <div class="nutrients-card">
-    <div class="nutrients-card__row nutrients-card__caloricity">
-      <label>Калорийность на 100 гр:</label>
+    <div class="nutrients-card__caloricity">
+      <label>Калорийность: </label>
       <label
         ><b>{{ $props.item.caloricity }} ккал</b></label
       >
     </div>
+
+    <BaseDivider />
 
     <div class="nutrients-card__row f-space-around">
       <div class="nutrients-card__col nutrients-card__nutrient">
@@ -45,7 +47,7 @@
 import type { Nutrients } from '#imports'
 
 defineOptions({
-  name: 'NutrientsEditCard',
+  name: 'NutrientsCard',
 })
 
 const props = defineProps({
@@ -71,8 +73,6 @@ const maxKnobValue = computed(() => props.item.carbs + props.item.fats + props.i
 
   &__caloricity {
     @include p1;
-
-    margin-bottom: $spacing-8;
   }
 
   &__row {
