@@ -2,7 +2,7 @@
   <div class="food-card">
     <div class="food-card__row food-card__header">
       <BaseTitle
-        v-model="title"
+        v-model="buffer.name"
         :edit-mode="props.editMode"
         class="f-grow"
         placeholder="Название продукта"
@@ -22,17 +22,23 @@
     <div class="food-card__row" v-else>
       <BaseDropdown
         class="food-card__category"
-        :model-value="category"
+        :model-value="buffer.category"
         checkmark
         placeholder="Категория"
         optionLabel="name"
         :options="categoryOptions"
-        @change="onCategoryChange"
+        @change="
+          onChange(new Category($event.value), 'category', () => {
+            if (buffer.subcategory) {
+              buffer.subcategory = undefined
+            }
+          })
+        "
       />
 
       <BaseDropdown
         class="food-card__category"
-        v-model="subcategory"
+        v-model="buffer.subcategory"
         checkmark
         placeholder="Подкатегория"
         optionLabel="name"
@@ -53,20 +59,19 @@
 
       <NutrientsEditCard
         v-else
-        :item="bufferItem.nutrients"
+        :item="buffer.nutrients"
         @update="onNutrientsChange"
       ></NutrientsEditCard>
     </BaseSegment>
 
     <BaseSegment class="food-card__row">
-      <PortionTable :item="sitems" @update="test"> </PortionTable>
+      <PortionTable :item="buffer" @update="test($event)"> </PortionTable>
     </BaseSegment>
   </div>
 </template>
 
 <script lang="ts" setup>
 import type { Food, Nutrients } from '#imports'
-import type { DropdownChangeEvent } from 'primevue/dropdown'
 
 defineOptions({
   name: 'FoodCard',
@@ -83,35 +88,15 @@ const props = defineProps({
   },
 })
 
-// const { buffer, onChange, hasChanges } = useBuffer(props.item)
+const { buffer, onChange, onArrayChange, hasChanges } = useBuffer(props.item)
 
-const title = ref(props.item.name)
-const category = ref(props.item.category)
-const subcategory = ref(props.item.subcategory)
-// const nutrients = ref(structuredClone(props.item.nutrients))
-const bufferItem = reactive(structuredClone(toRaw(props.item)))
-
-const onCategoryChange = (event: DropdownChangeEvent) => {
-  category.value = event.value
-  subcategory.value = undefined
+const test = (value: any) => {
+  onArrayChange(value, 'portions')
 }
 
 const onNutrientsChange = (payload: { key: keyof Nutrients; value: any }) => {
-  bufferItem.nutrients[payload.key] = payload.value
+  buffer.nutrients[payload.key] = payload.value
 }
-
-// watch(bufferItem.nutrients, () => {
-//   console.log('nutrients поменялся')
-// })
-
-const hasChanges = computed(() => {
-  return (
-    title.value !== props.item.name ||
-    !deepEqual(category.value, props.item.category) ||
-    !deepEqual(subcategory.value, props.item.subcategory)
-    // !deepEqual(nutrients.value, props.item.nutrients)
-  )
-})
 
 const categoryOptions = MockDictionary.foodCategories
 
@@ -120,13 +105,6 @@ const categoryBreadcrumbs = computed(() => {
     ? [{ label: props.item.category.name }, { label: props.item.subcategory.name }]
     : [{ label: props.item.category.name }]
 })
-
-const sitems = ref(props.item)
-
-const test = (value: any) => {
-  console.log('test')
-  sitems.value.portions = value
-}
 </script>
 
 <style lang="scss" scoped>

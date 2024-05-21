@@ -1,6 +1,20 @@
 <template>
   <div class="portion">
-    <BaseDataTable :value="props.item.portions">
+    <div class="portion__header">
+      <span>Порции:</span>
+      <BaseButton
+        icon="pi pi-plus"
+        label="Новая"
+        severity="primary"
+        @click="push(Portion.default())"
+      >
+      </BaseButton>
+    </div>
+    <BaseDataTable
+      :value="props.item.portions"
+      v-model:selection="selectedPorion"
+      selection-mode="single"
+    >
       <BaseColumn field="name" header="Название">
         <template #body="slotProps">
           <BaseInputText
@@ -10,9 +24,11 @@
                 style: {
                   border: 'none',
                   'box-shadow': 'none',
+                  'background-color': 'inherit',
                 },
               }),
             }"
+            @input="update(slotProps.data.id, 'name', getTargetValue($event))"
           />
         </template>
       </BaseColumn>
@@ -37,8 +53,21 @@
             placeholder="Ед. изм."
             optionLabel="name"
             :options="unitOptions"
+            @change="update(slotProps.data.id, 'unit', new Unit($event.value.key))"
           >
           </BaseDropdown>
+        </template>
+      </BaseColumn>
+
+      <BaseColumn :exportable="false" style="width: 54px">
+        <template #body="slotProps">
+          <BaseButton
+            v-show="selectedPorion?.id === slotProps.data.id"
+            icon="pi pi-times"
+            text
+            severity="danger"
+            @click="pop(slotProps.data.id)"
+          />
         </template>
       </BaseColumn>
     </BaseDataTable>
@@ -46,7 +75,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { IPortionable, Portion, Unit as TUnit, Units as TUnits } from '#imports'
+import type { IPortionable, Portion as TPortion, Unit as TUnit } from '#imports'
 
 defineOptions({
   name: 'PortionTable',
@@ -60,23 +89,32 @@ const props = defineProps({
 })
 
 const emits = defineEmits<{
-  update: [value: Portion[]]
-  'update:modelValue': [value: Portion[]]
+  update: [value: TPortion[]]
+  'update:modelValue': [value: TPortion[]]
 }>()
+
+// console.log(props.item.portions)
 
 const { update, push, pop } = useArrayUpdateModel(props.item.portions, emits, 'id')
 
 const unitOptions = Object.values(Unit.units).map((unit) => ({
   key: unit,
-  name: Unit.unitNames[unit].name,
+  name: Unit.unitNames[unit].shortname,
 }))
 
 const getUnitValue = (unit: TUnit) => {
   return unitOptions.find((u) => u.key === unit.key)
 }
+
+const selectedPorion = ref()
 </script>
 
 <style lang="scss" scoped>
 .portion {
+  &__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
 }
 </style>

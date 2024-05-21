@@ -3,20 +3,8 @@
 
 import type { UnwrapNestedRefs } from 'vue'
 
-// export const useUpdateModel = <T extends ModelTypes>(
-//   item: T,
-//   emit: Function,
-//   keyName: KeyNameOptional<T>
-// ) => {
-//   if (item instanceof Array && keyName) {
-//     const x: IArrayUpdateModel<T> = useArrayUpdateModel(item, keyName, emit)
-//     return x
-//   } else {
-//     return useObjectUpdateModel(item, emit)
-//   }
-// }
-
-// Array
+// full обновляем сущность целиком и эмитим его с изменениями, partial - эмитим изменения
+type UpdateModelStrategy = 'full' | 'partial'
 
 interface IArrayUpdateModel<T> {
   update: (keyValue: string, propertyName: keyof T, value: any) => void
@@ -29,6 +17,9 @@ export const useArrayUpdateModel = <T>(
   emit: Function,
   keyName: keyof T
 ): IArrayUpdateModel<T> => {
+  if (!isReactive(item)) {
+    throw new Error('Переданный объект не реактивен')
+  }
   return {
     update: (keyValue: string, propertyName: keyof T, value: any): void => {
       const emitValue = structuredClone(toRaw(item))
@@ -50,7 +41,7 @@ export const useArrayUpdateModel = <T>(
     },
     pop: (keyValue: string): void => {
       const emitValue = structuredClone(toRaw(item))
-      const result = emitValue.filter((p) => p[keyName] === keyValue)
+      const result = emitValue.filter((p) => p[keyName] !== keyValue)
 
       emit('update', result)
       emit('update:modelValue', result)
@@ -65,15 +56,13 @@ interface IObjectUpdateModel<T> {
   //   hasChanges: () => boolean
 }
 
-type ObjectUpdateType = 'full' | 'partial'
-
 //TODO найти способ получить тип поля из Generic через key
 export type ObjectUpdateModelPayload<T> = { key: keyof T; value: any }
 
 export const useObjectUpdateModel = <T>(
   item: T,
   emit: Function,
-  type: ObjectUpdateType
+  type: UpdateModelStrategy
 ): IObjectUpdateModel<T> => {
   if (type === 'full') {
     return {
@@ -120,10 +109,13 @@ export const useVModel = <T extends Object>(
 // ------------------------------------------------------------------------------------
 
 export const useBuffer = <T extends Object>(item: T) => {
+  if (!isReactive(item)) {
+    throw new Error('Переданный объект не реактивен: ', item)
+  }
+
   const raw: T = toRaw(item)
   const clone = structuredClone(raw)
   const buffer = reactive(clone)
-  // const buffer: T = reactive(structuredClone(toRaw(item)))
 
   return {
     buffer,
@@ -131,8 +123,17 @@ export const useBuffer = <T extends Object>(item: T) => {
       buffer[key] = value
       cb && cb()
     },
+    //TODO пересмотреть логику
+    onArrayChange: (value: any[], key: keyof UnwrapNestedRefs<T>, cb?: Function) => {
+      const arr = buffer[key]
+      if (arr instanceof Array) {
+        arr.length = 0
+        arr.push(...value)
+      }
+      cb && cb()
+    },
     hasChanges: computed(() => {
-      return !deepEqual(toRaw(buffer), toRaw(item))
+      return !deepEqual(buffer, item)
     }),
   }
 }

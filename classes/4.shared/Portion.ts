@@ -1,3 +1,5 @@
+import { v4 } from 'uuid'
+
 export enum Units {
   gramm = 'gramm',
   ml = 'ml',
@@ -38,6 +40,15 @@ export default class Portion {
     this.name = dto.name
     this.unit = new Unit(dto.unit)
     this.value = dto.value
+  }
+
+  static default() {
+    return new Portion({
+      id: v4(),
+      name: 'Новая порция',
+      unit: Units.gramm,
+      value: 100,
+    })
   }
 }
 

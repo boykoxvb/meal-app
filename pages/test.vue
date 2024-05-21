@@ -1,6 +1,6 @@
 <template>
   <div class="test">
-    <FoodCard editMode :item="food"></FoodCard>
+    <FoodCard editMode :item="f"></FoodCard>
     <!-- <PortionTable :item="food"></PortionTable> -->
   </div>
 </template>
@@ -36,6 +36,7 @@ const foodDTO: FoodDTO = {
 }
 
 const food = new Food(foodDTO)
+const f = reactive(food)
 </script>
 
 <style lang="scss" scoped></style>
