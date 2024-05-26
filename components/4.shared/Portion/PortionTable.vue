@@ -75,7 +75,7 @@
 </template>
 
 <script lang="ts" setup>
-import type { IPortionable, Portion as TPortion, Unit as TUnit } from '#imports'
+import type { IPortionable, Unit as TUnit } from '#imports'
 
 defineOptions({
   name: 'PortionTable',
@@ -89,11 +89,9 @@ const props = defineProps({
 })
 
 const emits = defineEmits<{
-  update: [value: TPortion[]]
-  'update:modelValue': [value: TPortion[]]
+  update: [value: Array<typeof Portion>]
+  'update:modelValue': [value: Array<typeof Portion>]
 }>()
-
-// console.log(props.item.portions)
 
 const { update, push, pop } = useArrayUpdateModel(props.item.portions, emits, 'id')
 
